@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Kit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Using a more modern approach with CSS variables and Tailwind for utility classes */
+        :root {
+            --bg-primary-dark: #1a202c;
+            --bg-secondary-dark: #2d3748;
+            --text-primary-dark: #f7fafc;
+            --text-secondary-dark: #a0aec0;
+            --accent-primary-dark: #64ffda;
+            --border-color-dark: #4a5568;
+
+            --bg-primary-light: #f7fafc;
+            --bg-secondary-light: #edf2f7;
+            --text-primary-light: #1a202c;
+            --text-secondary-light: #4a5568;
+            --accent-primary-light: #00a78e;
+            --border-color-light: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .dark {
+            background-color: var(--bg-primary-dark);
+            color: var(--text-primary-dark);
+        }
+
+        .light {
+            background-color: var(--bg-primary-light);
+            color: var(--text-primary-light);
+        }
+    </style>
+</head>
+<body class="dark">
+
+    <main id="app-root" class="max-w-3xl mx-auto p-4 sm:p-8 md:p-16 flex flex-col gap-10">
+        <!-- Header: Title & Brief -->
+        <header>
+            <h1 id="kit-title" class="text-4xl md:text-5xl font-bold mb-2 text-[var(--accent-primary-dark)] dark:text-[var(--accent-primary-dark)] light:text-[var(--accent-primary-light)]"></h1>
+            <p id="kit-brief" class="text-lg text-[var(--text-secondary-dark)] dark:text-[var(--text-secondary-dark)] light:text-[var(--text-secondary-light)]"></p>
+        </header>
+
+        <!-- Progress Tracker -->
+        <section class="card bg-[var(--bg-secondary-dark)] dark:bg-[var(--bg-secondary-dark)] light:bg-[var(--bg-secondary-light)] rounded-xl p-6 shadow-lg border border-[var(--border-color-dark)] dark:border-[var(--border-color-dark)] light:border-[var(--border-color-light)] text-center">
+            <h2 class="text-2xl font-bold mb-4">Your Progress</h2>
+            <div class="progress-container w-full h-8 bg-[var(--bg-primary-dark)] dark:bg-[var(--bg-primary-dark)] light:bg-[var(--bg-primary-light)] rounded-full overflow-hidden relative border border-[var(--border-color-dark)] dark:border-[var(--border-color-dark)] light:border-[var(--border-color-light)]">
+                <div id="progress-bar" class="h-full bg-[var(--accent-primary-dark)] dark:bg-[var(--accent-primary-dark)] light:bg-[var(--accent-primary-light)] transition-all duration-500 ease-out"></div>
+                <span id="progress-text" class="absolute inset-0 flex items-center justify-center font-bold text-sm text-black mix-blend-screen dark:mix-blend-screen light:mix-blend-normal light:text-white">0%</span>
+            </div>
+            <p id="motivational-message" class="mt-3 text-[var(--text-secondary-dark)] dark:text-[var(--text-secondary-dark)] light:text-[var(--text-secondary-light)] font-medium"></p>
+        </section>
+
+        <!-- Checklist -->
+        <section class="card bg-[var(--bg-secondary-dark)] dark:bg-[var(--bg-secondary-dark)] light:bg-[var(--bg-secondary-light)] rounded-xl p-6 shadow-lg border border-[var(--border-color-dark)] dark:border-[var(--border-color-dark)] light:border-[var(--border-color-light)]">
+            <h2 class="text-2xl font-bold mb-4">Implementation Checklist</h2>
+            <ul id="checklist-container" class="flex flex-col gap-3">
+                <!-- Checklist items will be injected here -->
+            </ul>
+        </section>
+
+        <!-- Tabbed Content -->
+        <section class="card bg-[var(--bg-secondary-dark)] dark:bg-[var(--bg-secondary-dark)] light:bg-[var(--bg-secondary-light)] rounded-xl p-6 shadow-lg border border-[var(--border-color-dark)] dark:border-[var(--border-color-dark)] light:border-[var(--border-color-light)]">
+            <div class="tabs border-b-2 border-[var(--border-color-dark)] dark:border-[var(--border-color-dark)] light:border-[var(--border-color-light)] mb-6">
+                <button class="tab-button active" data-tab="brief">Brief</button>
+                <button class="tab-button" data-tab="objectives">Objectives</button>
+                <button class="tab-button" data-tab="prerequisites">Prerequisites</button>
+                <button class="tab-button" data-tab="time">Time</button>
+            </div>
+            <div id="tab-brief" class="tab-content active"></div>
+            <div id="tab-objectives" class="tab-content hidden"></div>
+            <div id="tab-prerequisites" class="tab-content hidden"></div>
+            <div id="tab-time" class="tab-content hidden">
+                <h2 class="text-xl font-bold mb-3">Estimated Time Commitment</h2>
+                <ul id="time-commitment-list" class="list-disc list-inside"></ul>
+            </div>
+        </section>
+    </main>
+
+    <button class="theme-toggle fixed bottom-5 right-5 w-14 h-14 rounded-full flex items-center justify-center cursor-pointer z-50 shadow-lg transition-transform hover:scale-110 bg-[var(--bg-secondary-dark)] dark:bg-[var(--bg-secondary-dark)] light:bg-[var(--bg-secondary-light)] border border-[var(--border-color-dark)] dark:border-[var(--border-color-dark)] light:border-[var(--border-color-light)]" id="theme-toggle" aria-label="Toggle theme">
+        <i id="sun-icon" class="ph-fill ph-sun text-2xl hidden"></i>
+        <i id="moon-icon" class="ph-fill ph-moon text-2xl"></i>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const learningKitData = {
+                "topic": "Action Over Analysis: The Agency Builder's Framework",
+                "implementationChecklist": {
+                    "impCheck01": "Audit your current tech stack: Immediately switch from complex, self-hosted tools to simpler, cloud-hosted versions (e.g., n8n Cloud) to focus on delivering client value, not on server maintenance.",
+                    "impCheck02": "For new client acquisition on a budget (under $500), allocate all resources to cold email outreach instead of paid advertising like Facebook Ads.",
+                    "impCheck03": "Craft a 'Pain-Killer' pitch: When selling to budget-sensitive clients (like teachers or non-profits), identify and include information about third-party funding (grants, school budgets, etc.) to remove the cost barrier from their decision.",
+                    "impCheck04": "Establish a 'Legitimacy Play': Structure your business so that your primary service-based agency becomes the main source of real-world case studies and content for your info-products or community.",
+                    "impCheck05": "Commit to 'Action Over Analysis': For every hour spent consuming business content (YouTube, podcasts), spend two hours on direct, revenue-generating activities like client outreach or product building.",
+                    "impCheck06": "When selling a new high-ticket service without case studies, anchor its value to a previously successful, similar service, positioning the new offer as an even better version.",
+                    "impCheck07": "For beginners, prioritize consuming free, high-value content to build a baseline understanding of business fundamentals before investing in expensive paid courses."
+                },
+                "brief": "This course teaches aspiring agency owners how to stop over-analyzing and start taking decisive, profitable action. You will learn to simplify your technology, focus on effective low-budget client acquisition, and build a business where your client work automatically creates undeniable proof of your expertise.",
+                "learningObjectivesAndOutcomes": "<h3>Learning Objectives and Outcomes</h3><p>This mini-course is designed to fundamentally shift your mindset from that of a 'wantrepreneur' stuck in a cycle of information consumption to a pragmatic business owner focused on execution and revenue. By the end of this course, you will have a clear framework for making decisions that directly contribute to your bottom line, stripping away the complexity and analysis paralysis that holds most new entrepreneurs captive.</p><h4>Objective 1: Master Pragmatic Decision-Making</h4><p>You will learn to dissect common business dilemmas, such as choosing the right software stack. The core outcome is the ability to ruthlessly prioritize client value over technical vanity. We will deconstruct the 'self-hosted vs. cloud-hosted' debate, not as a technical problem, but as a business strategy problem. You will learn to calculate the true cost of your time and attention, enabling you to choose tools that maximize your ability to deliver results for clients, rather than turning your business into a DevOps project. The ultimate transformation is moving from 'How can I build this perfectly?' to 'What is the fastest, simplest path to deliver value and get paid?'</p><h4>Objective 2: Implement a High-ROI, Low-Budget Client Acquisition System</h4><p>The course will provide a stark, mathematical breakdown of why cold email outreach is vastly superior to paid ads for a bootstrapped business. You will move beyond the simple 'send emails' advice and understand the strategic psychology of effective outreach. We will analyze the case study of selling to the education sector, learning how to reframe a purchasing decision by introducing external funding sources. The outcome is not just a set of email templates, but a strategic understanding of how to remove financial friction from the sales process, making it easier for clients to say 'yes'.</p><h4>Objective 3: Build Your 'Legitimacy Engine'</h4><p>Perhaps the most crucial outcome is learning to structure your. You will learn how the creator plans to use his core service agency, 'LeftClick,' as the ultimate source of content and social proof. This module will teach you how to stop seeing 'client work' and 'marketing' as separate activities. Instead, every project, every result, and every challenge becomes a high-quality piece of content that proves your expertise without hype. You will learn to build a brand where your results do the selling for you, creating a powerful feedback loop that attracts higher-quality clients and justifies premium pricing.</p>",
+                "prerequisites": "<h3>Who is this course for?</h3><p>This course is not for the technically-minded tinkerer, but for the action-oriented business builder. The prerequisites are not about what you know in terms of code or software, but about your mindset and current business situation. If you recognize yourself in the descriptions below, you are ready.</p><ul class='list-disc list-inside space-y-2 mt-4'><li><strong>A Defined, Marketable Skill:</strong> You should already possess a skill that you intend to sell as a service. This could be AI automation, web design, copywriting, marketing consulting, or any other B2B service. The course does not teach the skill itself, but rather how to build a business around it. You need to have the 'what' you sell; we will focus on the 'how'.</li><li><strong>A Propensity for 'Analysis Paralysis':</strong> The ideal student is someone who is currently stuck. You spend more time watching YouTube videos about business than actually doing business. You have multiple tabs open comparing software, you're constantly debating which niche to enter, and you feel that the 'next' piece of information is the key to unlocking your success. This course is designed to break that cycle by replacing theory with a bias for action.</li><li><strong>A Small, Scrappy Budget:</strong> You are not a venture-backed founder. You are likely operating with a budget of less than $1,000 for marketing and tools. You feel the pain of every dollar spent, which often leads you to make decisions based on minimizing cost rather than maximizing ROI. We will address this head-on, teaching you how to think about expenses not as costs, but as investments in speed and efficiency.</li><li><strong>Frustration with Complexity:</strong> You are tired of the gurus who make business sound like rocket science. You've heard terms like 'systems level integration' and 'infrastructure audits' and it makes you feel like you're already behind. The primary prerequisite is a deep desire for simplicity and a repeatable process. You're not looking for the 'secret hack'; you're looking for the boring, simple work that actually gets clients.</li></ul><p class='mt-4'>In essence, you don't need a deep technical background. You don't need a large budget. You don't need an existing business. You need a skill to sell and a deep-seated frustration with your own lack of action. This course is the antidote to the 'wantrepreneur' mindset. It's for those who are ready to trade the comfort of learning for the discomfort of doing. If you've been 'getting ready to get ready' for months, you are the perfect candidate.</p>",
+                "timeCommitment": {
+                    "timeCommitment01": { "milestone": "Mindset Shift: Committing to Action Over Analysis", "estimatedTime": "45 minutes" },
+                    "timeCommitment02": { "milestone": "Tech Stack Audit & Simplification", "estimatedTime": "1 hour" },
+                    "timeCommitment03": { "milestone": "Crafting Your 'Someone Else Pays' Pitch", "estimatedTime": "1.5 hours" },
+                    "timeCommitment04": { "milestone": "Mapping Your 'Legitimacy Play' Content Strategy", "estimatedTime": "2 hours" },
+                    "timeCommitment05": { "milestone": "Executing Your First Low-Budget Outreach Campaign", "estimatedTime": "3 hours (spread over a week)" }
+                }
+            };
+
+            const state = {
+                checklistCompleted: []
+            };
+
+            // --- DOM Elements ---
+            const {
+                body
+            } = document;
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const sunIcon = document.getElementById('sun-icon');
+            const moonIcon = document.getElementById('moon-icon');
+            const checklistContainer = document.getElementById('checklist-container');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const motivationalMessage = document.getElementById('motivational-message');
+            const tabsContainer = document.querySelector('.tabs');
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            // --- Helper Functions ---
+            const getStorageKey = () => `learningKit_${learningKitData.topic.replace(/\s+/g, '_').toLowerCase()}`;
+
+            const loadState = () => {
+                const savedState = localStorage.getItem(getStorageKey());
+                if (savedState) {
+                    const parsed = JSON.parse(savedState);
+                    state.checklistCompleted = parsed.completed || [];
+                } else {
+                    // Initialize with false for each item if no saved state
+                    state.checklistCompleted = Array(Object.keys(learningKitData.implementationChecklist).length).fill(false);
+                }
+            };
+
+            const saveState = () => {
+                localStorage.setItem(getStorageKey(), JSON.stringify({
+                    completed: state.checklistCompleted
+                }));
+            };
+
+            // --- Theme Management ---
+            const applyTheme = (theme) => {
+                body.classList.remove('light', 'dark');
+                body.classList.add(theme);
+                sunIcon.style.display = theme === 'light' ? 'block' : 'none';
+                moonIcon.style.display = theme === 'dark' ? 'block' : 'none';
+            };
+
+            themeToggleBtn.addEventListener('click', () => {
+                const newTheme = body.classList.contains('dark') ? 'light' : 'dark';
+                localStorage.setItem('theme', newTheme);
+                applyTheme(newTheme);
+            });
+
+            // --- Content Population ---
+            const populateContent = () => {
+                document.title = learningKitData.topic;
+                document.getElementById('kit-title').textContent = learningKitData.topic;
+                document.getElementById('kit-brief').textContent = learningKitData.brief;
+                document.getElementById('tab-brief').innerHTML = `<p>${learningKitData.brief}</p>`;
+                document.getElementById('tab-objectives').innerHTML = learningKitData.learningObjectivesAndOutcomes;
+                document.getElementById('tab-prerequisites').innerHTML = learningKitData.prerequisites;
+
+                const timeList = document.getElementById('time-commitment-list');
+                timeList.innerHTML = '';
+                Object.values(learningKitData.timeCommitment).forEach(item => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>${item.milestone}:</strong> ${item.estimatedTime}`;
+                    timeList.appendChild(li);
+                });
+            };
+
+            // --- Checklist & Progress ---
+            const updateProgress = () => {
+                const totalItems = state.checklistCompleted.length;
+                if (totalItems === 0) return;
+
+                const completedCount = state.checklistCompleted.filter(Boolean).length;
+                const percentage = Math.round((completedCount / totalItems) * 100);
+
+                progressBar.style.width = `${percentage}%`;
+                progressText.textContent = `${percentage}%`;
+
+                const messages = {
+                    0: "Let's get started. One step at a time!",
+                    50: "Great start! Keep the momentum going.",
+                    100: "All done! Fantastic work executing the plan."
+                };
+                motivationalMessage.textContent = percentage < 50 ? messages[0] : percentage < 100 ? messages[50] : messages[100];
+            };
+
+            const renderChecklist = () => {
+                checklistContainer.innerHTML = '';
+                const items = Object.values(learningKitData.implementationChecklist);
+
+                items.forEach((itemText, index) => {
+                    const li = document.createElement('li');
+                    li.className = `checklist-item flex items-start gap-4 p-4 rounded-lg cursor-pointer transition-all duration-200 bg-[var(--bg-primary-dark)] dark:bg-[var(--bg-primary-dark)] light:bg-[var(--bg-primary-light)] border border-[var(--border-color-dark)] dark:border-[var(--border-color-dark)] light:border-[var(--border-color-light)] hover:border-[var(--accent-primary-dark)] dark:hover:border-[var(--accent-primary-dark)] light:hover:border-[var(--accent-primary-light)]`;
+                    if (state.checklistCompleted[index]) {
+                        li.classList.add('completed', 'opacity-60');
+                    }
+
+                    li.innerHTML = `
+                        <div class="icon-container flex-shrink-0 w-6 h-6 border-2 rounded-full flex items-center justify-center transition-all duration-300 ${state.checklistCompleted[index] ? 'bg-[var(--accent-primary-dark)] dark:bg-[var(--accent-primary-dark)] light:bg-[var(--accent-primary-light)] border-[var(--accent-primary-dark)] dark:border-[var(--accent-primary-dark)] light:border-[var(--accent-primary-light)]' : 'border-[var(--text-secondary-dark)] dark:border-[var(--text-secondary-dark)] light:border-[var(--text-secondary-light)]'}">
+                            <i class="ph-bold ph-check text-base text-black transition-opacity duration-300 ${state.checklistCompleted[index] ? 'opacity-100' : 'opacity-0'}"></i>
+                        </div>
+                        <span class="${state.checklistCompleted[index] ? 'line-through' : ''}">${itemText}</span>
+                    `;
+
+                    li.addEventListener('click', () => {
+                        state.checklistCompleted[index] = !state.checklistCompleted[index];
+                        li.classList.toggle('completed');
+                        li.classList.toggle('opacity-60');
+                        li.querySelector('span').classList.toggle('line-through');
+                        li.querySelector('.icon-container').classList.toggle(body.classList.contains('dark') ? 'bg-[var(--accent-primary-dark)]' : 'bg-[var(--accent-primary-light)]');
+                         li.querySelector('.icon-container').classList.toggle(body.classList.contains('dark') ? 'border-[var(--accent-primary-dark)]' : 'border-[var(--accent-primary-light)]');
+                        li.querySelector('.ph-check').classList.toggle('opacity-100');
+                        saveState();
+                        updateProgress();
+                    });
+
+                    checklistContainer.appendChild(li);
+                });
+            };
+
+            // --- Tabs ---
+            tabsContainer.addEventListener('click', (e) => {
+                if (!e.target.matches('.tab-button')) return;
+
+                const targetTab = e.target.dataset.tab;
+
+                tabButtons.forEach(btn => btn.classList.remove('active', 'text-[var(--accent-primary-dark)]', 'dark:text-[var(--accent-primary-dark)]', 'light:text-[var(--accent-primary-light)]', 'border-[var(--accent-primary-dark)]', 'dark:border-[var(--accent-primary-dark)]', 'light:border-[var(--accent-primary-light)]'));
+                e.target.classList.add('active', 'text-[var(--accent-primary-dark)]', 'dark:text-[var(--accent-primary-dark)]', 'light:text-[var(--accent-primary-light)]', 'border-[var(--accent-primary-dark)]', 'dark:border-[var(--accent-primary-dark)]', 'light:border-[var(--accent-primary-light)]');
+
+                tabContents.forEach(content => {
+                    content.classList.toggle('hidden', content.id !== `tab-${targetTab}`);
+                    content.classList.toggle('active', content.id === `tab-${targetTab}`);
+                });
+            });
+            
+             // --- Custom Tab Button Styles ---
+            const styleTabButtons = () => {
+                document.querySelectorAll('.tab-button').forEach(button => {
+                    button.classList.add('py-2', 'px-4', 'cursor-pointer', 'bg-transparent', 'border-b-4', 'transition-colors', 'duration-200', 'font-semibold', 'text-[var(--text-secondary-dark)]', 'dark:text-[var(--text-secondary-dark)]', 'light:text-[var(--text-secondary-light)]', 'border-transparent');
+                    button.classList.add('hover:text-[var(--text-primary-dark)]', 'dark:hover:text-[var(--text-primary-dark)]', 'light:hover:text-[var(--text-primary-light)]');
+                    if(button.classList.contains('active')) {
+                         button.classList.add('text-[var(--accent-primary-dark)]', 'dark:text-[var(--accent-primary-dark)]', 'light:text-[var(--accent-primary-light)]', 'border-[var(--accent-primary-dark)]', 'dark:border-[var(--accent-primary-dark)]', 'light:border-[var(--accent-primary-light)]');
+                    }
+                });
+            };
+
+
+            // --- Initialization ---
+            const init = () => {
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                applyTheme(savedTheme);
+                populateContent();
+                loadState();
+                renderChecklist();
+                updateProgress();
+                styleTabButtons();
+            };
+
+            init();
+        });
+    </script>
+</body>
+</html>
