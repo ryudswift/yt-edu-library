@@ -217,7 +217,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const GITHUB_REPO = 'ryudswift/swiftsheets';
+            const GITHUB_REPO = 'ryudswift/yt-edu-library';
             const PAGES_DIR_API = `https://api.github.com/repos/${GITHUB_REPO}/contents/pages`;
 
             const grid = document.getElementById('pages-grid');
@@ -245,7 +245,7 @@
             function createPageCard(page) {
                 const title = formatTitle(page.name);
                 const description = createDescription(title);
-                const pageUrl = `https://ryudswift.github.io/swiftsheets/pages/${page.name}`;
+                const pageUrl = `https://ryudswift.github.io/yt-edu-library/pages/${page.name}`;
                 const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-dark').substring(1).trim();
                 const textColor = getComputedStyle(document.documentElement).getPropertyValue('--highlight-primary').substring(1).trim();
                 const imageUrl = `https://placehold.co/600x400/${bgColor}/${textColor}?text=${encodeURIComponent(title.split(':')[0] || title)}&font=ubuntu`;
